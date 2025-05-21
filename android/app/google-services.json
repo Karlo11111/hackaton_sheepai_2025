@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "780129929439",
+    "project_id": "hackaton-sheep-ai",
+    "storage_bucket": "hackaton-sheep-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780129929439:android:b55f837fe00260047bc16a",
+        "android_client_info": {
+          "package_name": "com.example.hackaton_sheepai_2025"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSCpdgfpawYBz_fDO4kkjQj4WEyfaWIMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
