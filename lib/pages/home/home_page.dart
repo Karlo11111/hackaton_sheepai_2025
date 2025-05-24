@@ -18,7 +18,13 @@ class HomePage extends StatelessWidget {
     final money = box.get('money', defaultValue: 0);
 
     return Scaffold(
-      body: SafeArea(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover
+            )
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -26,16 +32,21 @@ class HomePage extends StatelessWidget {
             children: [
               // OTP logo and logout button
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                 const Text("Logo"),
+                  const Image(
+                    image: AssetImage('assets/icons/otpBankLogo.png', ),
+                    width: 200,
+                    ),
 
 
                   const Spacer(),
-                  const Icon(Icons.mail, size: 40),
+                  const Icon(Icons.mail, size: 40,color: Colors.white),
                   const SizedBox(width: 15),
                   GestureDetector(
                     onTap: () => _signOut(context),
-                    child: const Icon(Icons.logout, size: 40),
+                    child: const Icon(Icons.logout, size: 40,color: Colors.white),
                   ),
                 ],
               ),
@@ -47,6 +58,7 @@ class HomePage extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
+                  color: Colors.white
                 ),
               ),
 
@@ -57,6 +69,7 @@ class HomePage extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: Colors.white
                 ),
               ),
 
@@ -67,6 +80,7 @@ class HomePage extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
+                  color: Colors.white
                 ),
               ),
 
@@ -74,7 +88,7 @@ class HomePage extends StatelessWidget {
 
               // 👇 Displaying user money from Hive
               Text(
-                "$money €",
+                "${money.toStringAsFixed(2)} €",
                 style: GoogleFonts.inter(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
