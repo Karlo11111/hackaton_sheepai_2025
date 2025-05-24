@@ -17,7 +17,8 @@ class CryptoDetailPage extends StatefulWidget {
 class _CryptoDetailPageState extends State<CryptoDetailPage> {
   List<FlSpot> _pricePoints = [];
   Ticker? _ticker;
-  final TextEditingController _amountController = TextEditingController(text: "1");
+  final TextEditingController _amountController =
+      TextEditingController(text: "1");
   double _amountToBuy = 1.0;
 
   @override
@@ -29,7 +30,8 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<void> fetchKlineData() async {
     final symbol = widget.crypto['symbol'];
-    final url = 'https://api.bybit.com/v5/market/kline?category=spot&symbol=$symbol&interval=60&limit=30';
+    final url =
+        'https://api.bybit.com/v5/market/kline?category=spot&symbol=$symbol&interval=60&limit=30';
 
     final response = await http.get(Uri.parse(url));
     final data = json.decode(response.body);
@@ -49,7 +51,8 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<void> fetchTickerData() async {
     final symbol = widget.crypto['symbol'];
-    final response = await http.get(Uri.parse('https://api.bybit.com/v5/market/tickers?category=spot'));
+    final response = await http.get(
+        Uri.parse('https://api.bybit.com/v5/market/tickers?category=spot'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -87,7 +90,9 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
     await box.put(coin, currentCoinAmount + _amountToBuy);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
+      SnackBar(
+          content: Text(
+              'Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
     );
 
     setState(() {});
@@ -124,11 +129,16 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD"),
-                        Text("24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%"),
-                        Text("24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}"),
-                        Text("24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}"),
-                        Text("24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}"),
+                        Text(
+                            "Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD"),
+                        Text(
+                            "24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%"),
+                        Text(
+                            "24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}"),
+                        Text(
+                            "24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}"),
+                        Text(
+                            "24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}"),
                       ],
                     )
                   : const Center(child: CircularProgressIndicator()),
@@ -154,7 +164,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                       ),
                     ),
               const SizedBox(height: 20),
-          
+
               // 🔽 Input for amount
               TextField(
                 controller: _amountController,
@@ -169,18 +179,20 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                   });
                 },
               ),
-          
+
               const SizedBox(height: 10),
-          
+
               // 🔽 Show computed total cost
               _ticker != null
-                  ? Text('Total Cost: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}')
+                  ? Text(
+                      'Total Cost: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}')
                   : const SizedBox(),
-          
+
               const SizedBox(height: 10),
-          
+
               ElevatedButton(
-                onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
+                onPressed:
+                    (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
                 child: const Text('Buy with Local Money'),
               ),
             ],

@@ -1,17 +1,17 @@
 // ignore_for_file: file_names, prefer_const_constructors, prefer_final_fields, use_key_in_widget_constructors
 
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-
 import 'package:flutter/material.dart';
 import 'package:hackaton_sheepai_2025/pages/cryptoInvestment/crypto_page.dart';
 import 'package:hackaton_sheepai_2025/pages/home/home_page.dart';
 import 'package:hackaton_sheepai_2025/pages/settings/settings_page.dart';
 
-// Define your pages here
+// Define your pages here - you'll need to add the missing pages
 final List<Widget> _pages = [
-  HomePage(),
-  CryptoPage(),
-  SettingsPage(),
+  HomePage(), // Početna
+  Placeholder(), // Plaćanja - replace with your page
+  CryptoPage(), // Investiranje
+  Placeholder(), // Proizvodi - replace with your page
+  SettingsPage(), // Više
 ];
 
 class NavBar extends StatefulWidget {
@@ -23,7 +23,6 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int _page = 0;
-  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   late PageController _pageController;
 
   @override
@@ -35,36 +34,58 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 60,
-        animationCurve: standardEasing,
-        color: Color.fromARGB(255, 181, 139, 233),
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        key: _bottomNavigationKey,
-        items: <Widget>[
-          Icon(Icons.home,
-              size: 35,
-              color: _page == 0
-                  ? Color.fromARGB(255, 255, 255, 255)
-                  : Colors.white),
-          Icon(Icons.currency_pound_outlined,
-              size: 35,
-              color: _page == 1
-                  ? Color.fromARGB(255, 255, 255, 255)
-                  : Colors.white),
-          Icon(Icons.settings,
-              size: 35,
-              color: _page == 2
-                  ? Color.fromARGB(255, 255, 255, 255)
-                  : Colors.white),
-        ],
-        onTap: (index) {
-          setState(() {
-            _page = index;
-          });
-          // Use the controller to change pages
-          _pageController.jumpToPage(index);
-        },
+      extendBody: true,
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Container(
+          height: 70,
+          decoration: BoxDecoration(
+            color: Color(0xFF1D1E20),
+            borderRadius: BorderRadius.circular(35),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
+                offset: Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Početna (Home)
+              _buildNavItem(
+                icon: Icons.home_outlined,
+                label: 'Početna',
+                index: 0,
+              ),
+              // Plaćanja (Payments)
+              _buildNavItem(
+                icon: Icons.credit_card_outlined,
+                label: 'Plaćanja',
+                index: 1,
+              ),
+              // Investiranje (Investment)
+              _buildNavItem(
+                icon: Icons.trending_up_outlined,
+                label: 'Investiranje',
+                index: 2,
+              ),
+              // Proizvodi (Products)
+              _buildNavItem(
+                icon: Icons.shopping_bag_outlined,
+                label: 'Proizvodi',
+                index: 3,
+              ),
+              // Više (More)
+              _buildNavItem(
+                icon: Icons.menu,
+                label: 'Više',
+                index: 4,
+              ),
+            ],
+          ),
+        ),
       ),
       body: Container(
         child: Center(
@@ -77,6 +98,45 @@ class _NavBarState extends State<NavBar> {
               });
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    final bool isSelected = _page == index;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _page = index;
+        });
+        _pageController.jumpToPage(index);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 24,
+              color: isSelected ? Color(0xFF52AE30) : Colors.grey[400],
+            ),
+            SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                color: isSelected ? Color(0xFF52AE30) : Colors.grey[400],
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
         ),
       ),
     );
