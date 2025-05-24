@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_sheepai_2025/models/Ticker.dart';
+import 'package:hackaton_sheepai_2025/pages/tutorialsPage/tutorials_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
@@ -18,9 +19,9 @@ class CryptoDetailPage extends StatefulWidget {
 class _CryptoDetailPageState extends State<CryptoDetailPage> {
   List<FlSpot> _pricePoints = [];
   Ticker? _ticker;
-  final TextEditingController _amountController =
-      TextEditingController(text: "1");
-  double _amountToBuy = 1.0;
+  final TextEditingController _moneyController =
+      TextEditingController(text: "100");
+  double _moneyToInvest = 100.0;
 
   @override
   void initState() {
@@ -75,7 +76,8 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
     final money = box.get('money');
     final coin = widget.crypto['baseCoin'];
     final price = _ticker!.lastPrice;
-    final totalCost = price * _amountToBuy;
+    final totalCost = _moneyToInvest;
+    final amountToBuy = _moneyToInvest / price;
 
     if (totalCost > money) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -86,7 +88,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
     final currentAmount = box.get('${coin}_amount', defaultValue: 0.0);
     final currentTotal = box.get('${coin}_total_spent', defaultValue: 0.0);
-    final newAmount = currentAmount + _amountToBuy;
+    final newAmount = currentAmount + amountToBuy;
     final newTotal = currentTotal + totalCost;
 
     await box.put('money', money - totalCost);
@@ -96,7 +98,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Text(
-              'Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
+              'Bought ${amountToBuy.toStringAsFixed(6)} $coin for \$${totalCost.toStringAsFixed(2)}')),
     );
 
     setState(() {});
@@ -108,7 +110,9 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
     final amountOwned = box.get('${coin}_amount', defaultValue: 0.0);
     final price = _ticker!.lastPrice;
 
-    if (_amountToBuy > amountOwned) {
+    final amountToSell = _moneyToInvest / price;
+
+    if (amountToSell > amountOwned) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Not enough coins to sell!')),
       );
@@ -117,21 +121,21 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
     final currentTotal = box.get('${coin}_total_spent', defaultValue: 0.0);
     final avgBuyPrice = currentTotal / amountOwned;
-    final sellValue = price * _amountToBuy;
+    final sellValue = price * amountToSell;
 
-    final remainingAmount = amountOwned - _amountToBuy;
+    final remainingAmount = amountOwned - amountToSell;
     final remainingTotal = avgBuyPrice * remainingAmount;
 
     await box.put('${coin}_amount', remainingAmount);
     await box.put('${coin}_total_spent', remainingTotal);
     await box.put('money', box.get('money') + sellValue);
 
-    final profit = sellValue - (avgBuyPrice * _amountToBuy);
+    final profit = sellValue - (avgBuyPrice * amountToSell);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Sold $_amountToBuy $coin for \$${sellValue.toStringAsFixed(2)} (Profit/Loss: \$${profit.toStringAsFixed(2)})',
+          'Sold ${amountToSell.toStringAsFixed(6)} $coin for \$${sellValue.toStringAsFixed(2)} (Profit/Loss: \$${profit.toStringAsFixed(2)})',
         ),
       ),
     );
@@ -148,7 +152,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           widget.crypto['symbol'] ?? 'Crypto',
-          style: GoogleFonts.inter(color: Colors.white),
+          style: GoogleFonts.inter(color: Colors.white, fontSize: 16),
         ),
         backgroundColor: const Color.fromARGB(255, 42, 43, 46),
       ),
@@ -168,15 +172,18 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Base: $coin",
-                        style: const TextStyle(color: Colors.white)),
+                        style: GoogleFonts.inter(
+                            color: Colors.white, fontSize: 16)),
                     Text("Quote: ${widget.crypto['quoteCoin']}",
-                        style: const TextStyle(color: Colors.white)),
+                        style: GoogleFonts.inter(
+                            color: Colors.white, fontSize: 16)),
                     const SizedBox(height: 10),
                     FutureBuilder(
                       future: Hive.openBox('myBox'),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           final box = Hive.box('myBox');
+
                           final money = box.get('money', defaultValue: 0.0);
                           final coinAmount =
                               box.get('${coin}_amount', defaultValue: 0.0);
@@ -188,13 +195,16 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Money: \$${money.toStringAsFixed(2)}',
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                               Text(
                                   'You own: ${coinAmount.toStringAsFixed(4)} $coin',
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                               Text(
                                   'Avg Buy Price: \$${avgPrice.toStringAsFixed(2)}',
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                             ],
                           );
                         } else {
@@ -209,19 +219,24 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                             children: [
                               Text(
                                   "Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD",
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                               Text(
                                   "24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%",
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                               Text(
                                   "24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}",
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                               Text(
                                   "24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}",
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                               Text(
                                   "24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}",
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: GoogleFonts.inter(
+                                      color: Colors.white, fontSize: 16)),
                             ],
                           )
                         : const Center(child: CircularProgressIndicator()),
@@ -249,12 +264,14 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                           ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: _amountController,
+                      controller: _moneyController,
                       keyboardType: TextInputType.number,
-                      style: const TextStyle(color: Colors.white),
+                      style:
+                          GoogleFonts.inter(color: Colors.white, fontSize: 16),
                       decoration: InputDecoration(
-                        labelText: 'Amount of $coin to buy',
-                        labelStyle: const TextStyle(color: Colors.white),
+                        labelText: 'Money to invest (USD)',
+                        labelStyle: GoogleFonts.inter(
+                            color: Colors.white, fontSize: 16),
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
@@ -264,15 +281,16 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _amountToBuy = double.tryParse(value) ?? 0;
+                          _moneyToInvest = double.tryParse(value) ?? 0;
                         });
                       },
                     ),
                     const SizedBox(height: 10),
                     _ticker != null
                         ? Text(
-                            'You need: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}',
-                            style: const TextStyle(color: Colors.white),
+                            'You can buy: ${(_moneyToInvest / _ticker!.lastPrice).toStringAsFixed(6)} $coin',
+                            style: GoogleFonts.inter(
+                                color: Colors.white, fontSize: 16),
                           )
                         : const SizedBox(),
                     const SizedBox(height: 10),
@@ -280,7 +298,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: (_ticker == null || _amountToBuy <= 0)
+                            onPressed: (_ticker == null || _moneyToInvest <= 0)
                                 ? null
                                 : _buyCrypto,
                             style: ElevatedButton.styleFrom(
@@ -291,7 +309,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: (_ticker == null || _amountToBuy <= 0)
+                            onPressed: (_ticker == null || _moneyToInvest <= 0)
                                 ? null
                                 : _sellCrypto,
                             style: ElevatedButton.styleFrom(

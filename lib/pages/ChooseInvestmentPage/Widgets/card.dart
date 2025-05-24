@@ -4,25 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 class ItemCard extends StatelessWidget {
   final String imagePath;
   final String naslov;
-  final Widget navigateToPage; // The page to navigate to
+ 
 
   const ItemCard({
     super.key,
     required this.naslov,
     required this.imagePath,
-    required this.navigateToPage,
+    
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => navigateToPage),
-        );
-      },
-      child: Container(
+    return 
+     Container(
         width: 180,
         height: 180,
         decoration: BoxDecoration(
@@ -53,7 +47,7 @@ class ItemCard extends StatelessWidget {
             const SizedBox(height: 25),
           ],
         ),
-      ),
-    );
+      );
+    
   }
 }

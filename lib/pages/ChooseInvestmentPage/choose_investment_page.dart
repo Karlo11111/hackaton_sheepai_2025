@@ -6,6 +6,7 @@ import 'package:hackaton_sheepai_2025/pages/cryptoInvestment/crypto_page.dart';
 import 'package:hackaton_sheepai_2025/pages/sandboxPage/sanbox_page.dart';
 import 'package:hackaton_sheepai_2025/pages/stocks/stocks_page.dart';
 import 'package:hackaton_sheepai_2025/pages/tutorialsPage/tutorials_page.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
 
 class ChooseInvestmentPage extends StatelessWidget {
@@ -18,16 +19,17 @@ class ChooseInvestmentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get a reference to the Hive box
     final box = Hive.box('myBox');
     final money = box.get('money', defaultValue: 0);
 
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover)),
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -39,9 +41,7 @@ class ChooseInvestmentPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Image(
-                    image: AssetImage(
-                      'assets/icons/otpBankLogo.png',
-                    ),
+                    image: AssetImage('assets/icons/otpBankLogo.png'),
                     width: 200,
                   ),
                   const Spacer(),
@@ -49,52 +49,77 @@ class ChooseInvestmentPage extends StatelessWidget {
                   const SizedBox(width: 15),
                   GestureDetector(
                     onTap: () => _signOut(context),
-                    child:
-                        const Icon(Icons.logout, size: 40, color: Colors.white),
+                    child: const Icon(Icons.logout, size: 40, color: Colors.white),
                   ),
                 ],
               ),
 
               const SizedBox(height: 32),
 
-              const Row(
+              // Stocks and Crypto Cards
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ItemCard(
-                    naslov: 'Stocks',
-                    imagePath: 'assets/icons/stocks.png',
-                    navigateToPage: StocksPage(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  StocksPage()),
+                      );
+                    },
+                    child: const ItemCard(
+                      naslov: 'Stocks',
+                      imagePath: 'assets/icons/stocks.png',
+                    ),
                   ),
-                  ItemCard(
-                    naslov: 'Crypto',
-                    imagePath: 'assets/icons/crypto.png',
-                    navigateToPage: CryptoPage(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  CryptoPage()),
+                      );
+                    },
+                    child: const ItemCard(
+                      naslov: 'Crypto',
+                      imagePath: 'assets/icons/crypto.png',
+                    ),
                   ),
                 ],
               ),
 
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
 
               const BigCard(),
 
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
 
-              const Row(
+              // Tutorials and Sandbox Cards
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ItemCard(
-                    naslov: 'Tutorials',
-                    imagePath: 'assets/icons/tutorials.png',
-                    navigateToPage: TutorialsPage(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  TutorialsPage()),
+                      );
+                    },
+                    child: const ItemCard(
+                      naslov: 'Tutorials',
+                      imagePath: 'assets/icons/stocks.png',
+                    ),
                   ),
-                  ItemCard(
-                    naslov: 'Sandbox',
-                    imagePath: 'assets/icons/sandbox.png',
-                    navigateToPage: SanboxPage(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  SanboxPage()),
+                      );
+                    },
+                    child: const ItemCard(
+                      naslov: 'Sandbox',
+                      imagePath: 'assets/icons/stocks.png',
+                    ),
                   ),
                 ],
               ),
