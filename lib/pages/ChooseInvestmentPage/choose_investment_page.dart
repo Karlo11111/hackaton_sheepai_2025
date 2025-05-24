@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ChooseInvestmentPage extends StatelessWidget {
   const ChooseInvestmentPage({super.key});
@@ -59,10 +60,7 @@ class ChooseInvestmentPage extends StatelessWidget {
                     width: 100,
                     decoration: const BoxDecoration(color: Color(0x2A2B2E)),
                     child: Column(
-                      children: [
-                        const Text("Stocks"),
-                        Image.asset("assets/icons/stocks_icon.png"),
-                      ],
+                      children: [const Text("Stocks"), SvgPicture.asset()],
                     ),
                   ),
                   Container(
