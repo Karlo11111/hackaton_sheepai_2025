@@ -3,13 +3,14 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'package:flutter/material.dart';
+import 'package:hackaton_sheepai_2025/pages/cryptoInvestment/crypto_page.dart';
 import 'package:hackaton_sheepai_2025/pages/home/home_page.dart';
 import 'package:hackaton_sheepai_2025/pages/settings/settings_page.dart';
 
 // Define your pages here
 final List<Widget> _pages = [
   HomePage(),
-  HomePage(),
+  CryptoPage(),
   SettingsPage(),
 ];
 
@@ -46,7 +47,7 @@ class _NavBarState extends State<NavBar> {
               color: _page == 0
                   ? Color.fromARGB(255, 255, 255, 255)
                   : Colors.white),
-          Icon(Icons.photo_camera,
+          Icon(Icons.currency_pound_outlined,
               size: 35,
               color: _page == 1
                   ? Color.fromARGB(255, 255, 255, 255)

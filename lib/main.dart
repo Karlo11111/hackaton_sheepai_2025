@@ -13,7 +13,13 @@ void main() async {
   );
 
   await Hive.initFlutter();
-  var box = Hive.openBox('myBox');
+  var box = await Hive.openBox('myBox'); 
+if (!box.containsKey('money')) {
+  await box.put('money', 120); 
+}
+
+
+
   runApp(const MyApp());
 }
 
