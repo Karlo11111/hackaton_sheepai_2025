@@ -20,14 +20,14 @@ class MyButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          color: Theme.of(context).colorScheme.primary,
+          color: Color.fromARGB(255, 82, 174, 48),
         ),
         alignment: Alignment.center,
         height: height,
         child: Text(
           buttonText,
           style: GoogleFonts.inter(
-              color: Theme.of(context).colorScheme.background,
+              color: Colors.white,
               fontWeight: FontWeight.bold),
         ),
       ),
