@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hackaton_sheepai_2025/pages/stocks/stocks_trade_page.dart';
+
+// Import your stocks trade page here
+// import 'package:your_app/pages/stocks_trade_page.dart';
 
 class StocksPage extends StatefulWidget {
   const StocksPage({super.key});
@@ -49,7 +53,7 @@ class _StocksPageState extends State<StocksPage> {
       myBox = Hive.box('myBox');
       setState(() {
         investmentBalance =
-            (myBox!.get('investmentBalance', defaultValue: 1.47) as num)
+            (myBox!.get('investmentBalance', defaultValue: 0) as num)
                 .toDouble();
         mainBalance =
             (myBox!.get('money', defaultValue: 0.0) as num).toDouble();
@@ -92,6 +96,15 @@ class _StocksPageState extends State<StocksPage> {
     } catch (e) {
       debugPrint('Error saving balances: $e');
     }
+  }
+
+  void _navigateToTradePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const StocksTradePage(),
+      ),
+    );
   }
 
   void _showAddMoneyDialog() {
@@ -293,143 +306,148 @@ class _StocksPageState extends State<StocksPage> {
   }
 
   Widget _buildTopMoversWidget() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2A2D30),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with arrow
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Today's Top movers",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Icon(
-                Icons.chevron_right,
-                color: Colors.white54,
-                size: 24,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Toggle buttons
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1C1E),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
+    return InkWell(
+      onTap: _navigateToTradePage,
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2A2D30),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with arrow
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showTopGainers = true;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: showTopGainers
-                            ? const Color(0xFF444648)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Top gainers',
-                          style: TextStyle(
-                            color:
-                                showTopGainers ? Colors.white : Colors.white54,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
+                const Text(
+                  "Today's Top movers",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showTopGainers = false;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: !showTopGainers
-                            ? const Color(0xFF444648)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Top losers',
-                          style: TextStyle(
-                            color:
-                                !showTopGainers ? Colors.white : Colors.white54,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                const Icon(
+                  Icons.chevron_right,
+                  color: Colors.white54,
+                  size: 24,
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          // Stock grid - simplified approach
-          Column(
-            children: [
-              // First row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // Toggle buttons
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1C1E),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
                 children: [
-                  for (int i = 0; i < 4; i++)
-                    _buildSimpleStockCard(
-                      (showTopGainers ? topGainers : topLosers)[i]['symbol'],
-                      (showTopGainers ? topGainers : topLosers)[i]
-                          ['percentage'],
-                      (showTopGainers ? topGainers : topLosers)[i]['color'],
-                      isGainer: showTopGainers,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showTopGainers = true;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: showTopGainers
+                              ? const Color(0xFF444648)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Top gainers',
+                            style: TextStyle(
+                              color: showTopGainers
+                                  ? Colors.white
+                                  : Colors.white54,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showTopGainers = false;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: !showTopGainers
+                              ? const Color(0xFF444648)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Top losers',
+                            style: TextStyle(
+                              color: !showTopGainers
+                                  ? Colors.white
+                                  : Colors.white54,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 16),
-              // Second row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  for (int i = 4; i < 8; i++)
-                    _buildSimpleStockCard(
-                      (showTopGainers ? topGainers : topLosers)[i]['symbol'],
-                      (showTopGainers ? topGainers : topLosers)[i]
-                          ['percentage'],
-                      (showTopGainers ? topGainers : topLosers)[i]['color'],
-                      isGainer: showTopGainers,
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 20),
+
+            // Stock grid - simplified approach
+            Column(
+              children: [
+                // First row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    for (int i = 0; i < 4; i++)
+                      _buildSimpleStockCard(
+                        (showTopGainers ? topGainers : topLosers)[i]['symbol'],
+                        (showTopGainers ? topGainers : topLosers)[i]
+                            ['percentage'],
+                        (showTopGainers ? topGainers : topLosers)[i]['color'],
+                        isGainer: showTopGainers,
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Second row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    for (int i = 4; i < 8; i++)
+                      _buildSimpleStockCard(
+                        (showTopGainers ? topGainers : topLosers)[i]['symbol'],
+                        (showTopGainers ? topGainers : topLosers)[i]
+                            ['percentage'],
+                        (showTopGainers ? topGainers : topLosers)[i]['color'],
+                        isGainer: showTopGainers,
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -508,7 +526,7 @@ class _StocksPageState extends State<StocksPage> {
                           _buildActionButton(
                             icon: Icons.trending_up,
                             label: 'Trade',
-                            onTap: () {},
+                            onTap: _navigateToTradePage,
                           ),
                           _buildActionButton(
                             icon: Icons.add,

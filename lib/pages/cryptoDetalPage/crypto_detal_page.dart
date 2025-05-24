@@ -18,7 +18,8 @@ class CryptoDetailPage extends StatefulWidget {
 class _CryptoDetailPageState extends State<CryptoDetailPage> {
   List<FlSpot> _pricePoints = [];
   Ticker? _ticker;
-  final TextEditingController _amountController = TextEditingController(text: "1");
+  final TextEditingController _amountController =
+      TextEditingController(text: "1");
   double _amountToBuy = 1.0;
 
   @override
@@ -30,7 +31,8 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<void> fetchKlineData() async {
     final symbol = widget.crypto['symbol'];
-    final url = 'https://api.bybit.com/v5/market/kline?category=spot&symbol=$symbol&interval=60&limit=30';
+    final url =
+        'https://api.bybit.com/v5/market/kline?category=spot&symbol=$symbol&interval=60&limit=30';
 
     final response = await http.get(Uri.parse(url));
     final data = json.decode(response.body);
@@ -50,7 +52,8 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<void> fetchTickerData() async {
     final symbol = widget.crypto['symbol'];
-    final response = await http.get(Uri.parse('https://api.bybit.com/v5/market/tickers?category=spot'));
+    final response = await http.get(
+        Uri.parse('https://api.bybit.com/v5/market/tickers?category=spot'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -91,7 +94,9 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
     await box.put('${coin}_total_spent', newTotal);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
+      SnackBar(
+          content: Text(
+              'Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
     );
 
     setState(() {});
@@ -162,8 +167,10 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Base: $coin", style: const TextStyle(color: Colors.white)),
-                    Text("Quote: ${widget.crypto['quoteCoin']}", style: const TextStyle(color: Colors.white)),
+                    Text("Base: $coin",
+                        style: const TextStyle(color: Colors.white)),
+                    Text("Quote: ${widget.crypto['quoteCoin']}",
+                        style: const TextStyle(color: Colors.white)),
                     const SizedBox(height: 10),
                     FutureBuilder(
                       future: Hive.openBox('myBox'),
@@ -171,15 +178,23 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                         if (snapshot.connectionState == ConnectionState.done) {
                           final box = Hive.box('myBox');
                           final money = box.get('money', defaultValue: 0.0);
-                          final coinAmount = box.get('${coin}_amount', defaultValue: 0.0);
-                          final coinSpent = box.get('${coin}_total_spent', defaultValue: 0.0);
-                          final avgPrice = coinAmount > 0 ? coinSpent / coinAmount : 0.0;
+                          final coinAmount =
+                              box.get('${coin}_amount', defaultValue: 0.0);
+                          final coinSpent =
+                              box.get('${coin}_total_spent', defaultValue: 0.0);
+                          final avgPrice =
+                              coinAmount > 0 ? coinSpent / coinAmount : 0.0;
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Money: \$${money.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white)),
-                              Text('You own: ${coinAmount.toStringAsFixed(4)} $coin', style: const TextStyle(color: Colors.white)),
-                              Text('Avg Buy Price: \$${avgPrice.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white)),
+                              Text('Money: \$${money.toStringAsFixed(2)}',
+                                  style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  'You own: ${coinAmount.toStringAsFixed(4)} $coin',
+                                  style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  'Avg Buy Price: \$${avgPrice.toStringAsFixed(2)}',
+                                  style: const TextStyle(color: Colors.white)),
                             ],
                           );
                         } else {
@@ -192,11 +207,21 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD", style: const TextStyle(color: Colors.white)),
-                              Text("24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%", style: const TextStyle(color: Colors.white)),
-                              Text("24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white)),
-                              Text("24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white)),
-                              Text("24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  "Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD",
+                                  style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  "24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%",
+                                  style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  "24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  "24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Colors.white)),
+                              Text(
+                                  "24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Colors.white)),
                             ],
                           )
                         : const Center(child: CircularProgressIndicator()),
@@ -243,31 +268,34 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                         });
                       },
                     ),
-
                     const SizedBox(height: 10),
-
                     _ticker != null
                         ? Text(
                             'You need: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}',
                             style: const TextStyle(color: Colors.white),
                           )
                         : const SizedBox(),
-
                     const SizedBox(height: 10),
                     Row(
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                            onPressed: (_ticker == null || _amountToBuy <= 0)
+                                ? null
+                                : _buyCrypto,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange),
                             child: const Text('Buy'),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _sellCrypto,
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                            onPressed: (_ticker == null || _amountToBuy <= 0)
+                                ? null
+                                : _sellCrypto,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             child: const Text('Sell'),
                           ),
                         ),

@@ -6,7 +6,6 @@ import 'package:hackaton_sheepai_2025/pages/home/home_page.dart';
 import 'package:hackaton_sheepai_2025/pages/paymentsPage/payments_page.dart';
 import 'package:hackaton_sheepai_2025/pages/productsPage/products_page.dart';
 import 'package:hackaton_sheepai_2025/pages/settings/settings_page.dart';
-import 'package:hackaton_sheepai_2025/pages/stocks/stocks_page.dart';
 
 // Define your pages here - you'll need to add the missing pages
 final List<Widget> _pages = [
@@ -14,7 +13,7 @@ final List<Widget> _pages = [
   PaymentsPage(),
   ChooseInvestmentPage(), // Investiranje
   ProductsPage(),
-  StocksPage(), // Više
+  SettingsPage(), // Više
 ];
 
 class NavBar extends StatefulWidget {

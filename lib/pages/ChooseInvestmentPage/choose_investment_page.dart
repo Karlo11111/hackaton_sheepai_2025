@@ -4,6 +4,7 @@ import 'package:hackaton_sheepai_2025/pages/ChooseInvestmentPage/Widgets/bigCard
 import 'package:hackaton_sheepai_2025/pages/ChooseInvestmentPage/Widgets/card.dart';
 import 'package:hackaton_sheepai_2025/pages/cryptoInvestment/crypto_page.dart';
 import 'package:hackaton_sheepai_2025/pages/sandboxPage/sanbox_page.dart';
+import 'package:hackaton_sheepai_2025/pages/stocks/stocks_page.dart';
 import 'package:hackaton_sheepai_2025/pages/tutorialsPage/tutorials_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -62,7 +63,7 @@ class ChooseInvestmentPage extends StatelessWidget {
                   ItemCard(
                     naslov: 'Stocks',
                     imagePath: 'assets/icons/stocks.png',
-                    navigateToPage: CryptoPage(),
+                    navigateToPage: StocksPage(),
                   ),
                   ItemCard(
                     naslov: 'Crypto',
