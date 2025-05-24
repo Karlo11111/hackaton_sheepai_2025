@@ -81,14 +81,53 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
       return;
     }
 
-    final currentCoinAmount = box.get(coin, defaultValue: 0.0);
+    final currentAmount = box.get('${coin}_amount', defaultValue: 0.0);
+    final currentTotal = box.get('${coin}_total_spent', defaultValue: 0.0);
+    final newAmount = currentAmount + _amountToBuy;
+    final newTotal = currentTotal + totalCost;
 
     await box.put('money', money - totalCost);
-    await box.put(coin, currentCoinAmount + _amountToBuy);
+    await box.put('${coin}_amount', newAmount);
+    await box.put('${coin}_total_spent', newTotal);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
+    );
+
+    setState(() {});
+  }
+
+  Future<void> _sellCrypto() async {
+    final box = await Hive.openBox('myBox');
+    final coin = widget.crypto['baseCoin'];
+    final amountOwned = box.get('${coin}_amount', defaultValue: 0.0);
+    final price = _ticker!.lastPrice;
+
+    if (_amountToBuy > amountOwned) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Not enough coins to sell!')),
+      );
+      return;
+    }
+
+    final currentTotal = box.get('${coin}_total_spent', defaultValue: 0.0);
+    final avgBuyPrice = currentTotal / amountOwned;
+    final sellValue = price * _amountToBuy;
+
+    final remainingAmount = amountOwned - _amountToBuy;
+    final remainingTotal = avgBuyPrice * remainingAmount;
+
+    await box.put('${coin}_amount', remainingAmount);
+    await box.put('${coin}_total_spent', remainingTotal);
+    await box.put('money', box.get('money') + sellValue);
+
+    final profit = sellValue - (avgBuyPrice * _amountToBuy);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}'),
+        content: Text(
+          'Sold $_amountToBuy $coin for \$${sellValue.toStringAsFixed(2)} (Profit/Loss: \$${profit.toStringAsFixed(2)})',
+        ),
       ),
     );
 
@@ -131,8 +170,18 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           final box = Hive.box('myBox');
-                          final money = box.get('money', defaultValue: 0);
-                          return Text('Money: \$${money.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white));
+                          final money = box.get('money', defaultValue: 0.0);
+                          final coinAmount = box.get('${coin}_amount', defaultValue: 0.0);
+                          final coinSpent = box.get('${coin}_total_spent', defaultValue: 0.0);
+                          final avgPrice = coinAmount > 0 ? coinSpent / coinAmount : 0.0;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Money: \$${money.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white)),
+                              Text('You own: ${coinAmount.toStringAsFixed(4)} $coin', style: const TextStyle(color: Colors.white)),
+                              Text('Avg Buy Price: \$${avgPrice.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white)),
+                            ],
+                          );
                         } else {
                           return const CircularProgressIndicator();
                         }
@@ -163,12 +212,12 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                                     spots: _pricePoints,
                                     isCurved: true,
                                     belowBarData: BarAreaData(show: false),
-                                    dotData: FlDotData(show: false),
+                                    dotData: const FlDotData(show: false),
                                     color: Colors.orange,
                                   ),
                                 ],
-                                titlesData: FlTitlesData(show: false),
-                                gridData: FlGridData(show: false),
+                                titlesData: const FlTitlesData(show: false),
+                                gridData: const FlGridData(show: true),
                                 borderData: FlBorderData(show: false),
                               ),
                             ),
@@ -194,20 +243,35 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
                         });
                       },
                     ),
+
                     const SizedBox(height: 10),
+
                     _ticker != null
                         ? Text(
-                            'Total Cost: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}',
+                            'You need: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}',
                             style: const TextStyle(color: Colors.white),
                           )
                         : const SizedBox(),
+
                     const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                      ),
-                      child: const Text('Buy with Local Money'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                            child: const Text('Buy'),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _sellCrypto,
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                            child: const Text('Sell'),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
