@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_sheepai_2025/models/Ticker.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,8 +18,7 @@ class CryptoDetailPage extends StatefulWidget {
 class _CryptoDetailPageState extends State<CryptoDetailPage> {
   List<FlSpot> _pricePoints = [];
   Ticker? _ticker;
-  final TextEditingController _amountController =
-      TextEditingController(text: "1");
+  final TextEditingController _amountController = TextEditingController(text: "1");
   double _amountToBuy = 1.0;
 
   @override
@@ -30,8 +30,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<void> fetchKlineData() async {
     final symbol = widget.crypto['symbol'];
-    final url =
-        'https://api.bybit.com/v5/market/kline?category=spot&symbol=$symbol&interval=60&limit=30';
+    final url = 'https://api.bybit.com/v5/market/kline?category=spot&symbol=$symbol&interval=60&limit=30';
 
     final response = await http.get(Uri.parse(url));
     final data = json.decode(response.body);
@@ -51,8 +50,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<void> fetchTickerData() async {
     final symbol = widget.crypto['symbol'];
-    final response = await http.get(
-        Uri.parse('https://api.bybit.com/v5/market/tickers?category=spot'));
+    final response = await http.get(Uri.parse('https://api.bybit.com/v5/market/tickers?category=spot'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -74,7 +72,6 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
     final money = box.get('money');
     final coin = widget.crypto['baseCoin'];
     final price = _ticker!.lastPrice;
-
     final totalCost = price * _amountToBuy;
 
     if (totalCost > money) {
@@ -91,8 +88,8 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(
-              'Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}')),
+        content: Text('Bought $_amountToBuy $coin for \$${totalCost.toStringAsFixed(2)}'),
+      ),
     );
 
     setState(() {});
@@ -101,103 +98,123 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
   @override
   Widget build(BuildContext context) {
     final coin = widget.crypto['baseCoin'];
+
     return Scaffold(
-      appBar: AppBar(title: Text(widget.crypto['symbol'] ?? 'Crypto')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Base: $coin"),
-              Text("Quote: ${widget.crypto['quoteCoin']}"),
-              const SizedBox(height: 10),
-              FutureBuilder(
-                future: Hive.openBox('myBox'),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    final box = Hive.box('myBox');
-                    final money = box.get('money', defaultValue: 0);
-                    return Text('Money: \$${money.toStringAsFixed(2)}');
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-              _ticker != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD"),
-                        Text(
-                            "24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%"),
-                        Text(
-                            "24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}"),
-                        Text(
-                            "24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}"),
-                        Text(
-                            "24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}"),
-                      ],
-                    )
-                  : const Center(child: CircularProgressIndicator()),
-              const SizedBox(height: 20),
-              _pricePoints.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : SizedBox(
-                      height: 200,
-                      child: LineChart(
-                        LineChartData(
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: _pricePoints,
-                              isCurved: true,
-                              belowBarData: BarAreaData(show: false),
-                              dotData: FlDotData(show: false),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          widget.crypto['symbol'] ?? 'Crypto',
+          style: GoogleFonts.inter(color: Colors.white),
+        ),
+        backgroundColor: const Color.fromARGB(255, 42, 43, 46),
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Base: $coin", style: const TextStyle(color: Colors.white)),
+                    Text("Quote: ${widget.crypto['quoteCoin']}", style: const TextStyle(color: Colors.white)),
+                    const SizedBox(height: 10),
+                    FutureBuilder(
+                      future: Hive.openBox('myBox'),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          final box = Hive.box('myBox');
+                          final money = box.get('money', defaultValue: 0);
+                          return Text('Money: \$${money.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white));
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    _ticker != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Price: ${_ticker!.lastPrice.toStringAsFixed(2)} USD", style: const TextStyle(color: Colors.white)),
+                              Text("24h Change: ${_ticker!.price24hPcnt.toStringAsFixed(2)}%", style: const TextStyle(color: Colors.white)),
+                              Text("24h High: ${_ticker!.highPrice24h.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white)),
+                              Text("24h Low: ${_ticker!.lowPrice24h.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white)),
+                              Text("24h Volume: ${_ticker!.volume24h.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white)),
+                            ],
+                          )
+                        : const Center(child: CircularProgressIndicator()),
+                    const SizedBox(height: 20),
+                    _pricePoints.isEmpty
+                        ? const Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            height: 200,
+                            child: LineChart(
+                              LineChartData(
+                                lineBarsData: [
+                                  LineChartBarData(
+                                    spots: _pricePoints,
+                                    isCurved: true,
+                                    belowBarData: BarAreaData(show: false),
+                                    dotData: FlDotData(show: false),
+                                    color: Colors.orange,
+                                  ),
+                                ],
+                                titlesData: FlTitlesData(show: false),
+                                gridData: FlGridData(show: false),
+                                borderData: FlBorderData(show: false),
+                              ),
                             ),
-                          ],
-                          titlesData: FlTitlesData(show: false),
-                          gridData: FlGridData(show: false),
-                          borderData: FlBorderData(show: false),
+                          ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Amount of $coin to buy',
+                        labelStyle: const TextStyle(color: Colors.white),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.orange),
                         ),
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          _amountToBuy = double.tryParse(value) ?? 0;
+                        });
+                      },
                     ),
-              const SizedBox(height: 20),
-
-              // 🔽 Input for amount
-              TextField(
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Amount of $coin to buy',
-                  border: OutlineInputBorder(),
+                    const SizedBox(height: 10),
+                    _ticker != null
+                        ? Text(
+                            'Total Cost: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}',
+                            style: const TextStyle(color: Colors.white),
+                          )
+                        : const SizedBox(),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                      ),
+                      child: const Text('Buy with Local Money'),
+                    ),
+                  ],
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _amountToBuy = double.tryParse(value) ?? 0;
-                  });
-                },
               ),
-
-              const SizedBox(height: 10),
-
-              // 🔽 Show computed total cost
-              _ticker != null
-                  ? Text(
-                      'Total Cost: \$${(_ticker!.lastPrice * _amountToBuy).toStringAsFixed(2)}')
-                  : const SizedBox(),
-
-              const SizedBox(height: 10),
-
-              ElevatedButton(
-                onPressed:
-                    (_ticker == null || _amountToBuy <= 0) ? null : _buyCrypto,
-                child: const Text('Buy with Local Money'),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

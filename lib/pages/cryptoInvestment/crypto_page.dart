@@ -53,7 +53,16 @@ class _CryptoPageState extends State<CryptoPage> {
     return Scaffold(
       
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Container(decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png',),
+              fit: BoxFit.cover
+              )
+          )
+          ,child: const Center(
+            child: CircularProgressIndicator()
+            )
+            )
           : Container(
             decoration: const BoxDecoration(
               image: DecorationImage(

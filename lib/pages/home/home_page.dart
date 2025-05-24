@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 16),
 
               Text(
-                "Pozdrav Antonio!",
+                "Hello Antonio!",
                 style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 12),
 
               Text(
-                "Tekući račun",
+                "Checking account",
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 12),
 
               Text(
-                "Stanje",
+                "Current state",
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
