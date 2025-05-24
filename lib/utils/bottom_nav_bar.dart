@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors, prefer_final_fields, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hackaton_sheepai_2025/pages/cryptoInvestment/crypto_page.dart';
+import 'package:hackaton_sheepai_2025/pages/ChooseInvestmentPage/choose_investment_page.dart';
 import 'package:hackaton_sheepai_2025/pages/home/home_page.dart';
 import 'package:hackaton_sheepai_2025/pages/paymentsPage/payments_page.dart';
 import 'package:hackaton_sheepai_2025/pages/productsPage/products_page.dart';
@@ -10,9 +10,9 @@ import 'package:hackaton_sheepai_2025/pages/settings/settings_page.dart';
 // Define your pages here - you'll need to add the missing pages
 final List<Widget> _pages = [
   HomePage(), // Početna
-  PaymentsPage(), 
-  CryptoPage(), // Investiranje
-  ProductsPage(), 
+  PaymentsPage(),
+  ChooseInvestmentPage(), // Investiranje
+  ProductsPage(),
   SettingsPage(), // Više
 ];
 
